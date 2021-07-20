@@ -63,13 +63,12 @@ jobs:
     name: Helm lint and release
     runs-on: ubuntu-latest
     needs: student-api-image-build
-
     steps:
-     - uses: actions/checkout@v2
-     - name: Helm Lint
-       uses: WyriHaximus/github-action-helm3@v2
-       with:
-         exec: helm lint ./helm-chart/student-api
+    - uses: actions/checkout@v2
+    - name: Helm Lint
+      uses: WyriHaximus/github-action-helm3@v2
+      with:
+        exec: helm lint ./helm-chart/student-api
 
     - uses: actions/checkout@v1
     - name: Prep helm chart
@@ -81,12 +80,12 @@ jobs:
       env:
         MASTER_COMMIT_ID: ${{ toJson(github.sha) }}
 
-     - name: Helm install
-       uses: WyriHaximus/github-action-helm3@v2
-       with:
-         exec: |
-            export APP_TAG=`sed -e 's/^"//' -e 's/"$//' <<<"$MASTER_COMMIT_ID" | cut -c1-7` &&
-            helm upgrade --install student-api --namespace=student-api ./helm-chart/student-api --set image.tag=${APP_TAG}
-         kubeconfig: '${{ secrets.KUBECONFIG }}'
-       env:
-         MASTER_COMMIT_ID: ${{ toJson(github.sha) }}
+    - name: Helm install
+      uses: WyriHaximus/github-action-helm3@v2
+      with:
+        exec: |
+          export APP_TAG=`sed -e 's/^"//' -e 's/"$//' <<<"$MASTER_COMMIT_ID" | cut -c1-7` &&
+          helm upgrade --install student-api --namespace=student-api ./helm-chart/student-api --set image.tag=${APP_TAG}
+        kubeconfig: '${{ secrets.KUBECONFIG }}'
+      env:
+        MASTER_COMMIT_ID: ${{ toJson(github.sha) }}
