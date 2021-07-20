@@ -24,7 +24,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
-        run: mvn clean package -DSkipTests
+        run: mvn clean test
         working-directory: webapi
 
   artifact:
@@ -65,7 +65,7 @@ jobs:
         run : make docker-login
         env :
           DOCKER_TOKEN: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
-          DOCKER_USERNAME: prasanna1994
+          DOCKER_USERNAME: ${{ secrets.REPOSITORY_ACCESS_USER }}
 
       - name: Build docker image
         run : mvn install dockerfile:build
@@ -79,7 +79,7 @@ jobs:
           make docker-retag-push
         env:
           MASTER_COMMIT_ID: ${{ toJson(github.sha) }}
-          DOCKER_USERNAME: prasanna12510
+          DOCKER_USERNAME: ${{ secrets.REPOSITORY_ACCESS_USER }}
           DOCKER_REPO: student-api
 
   student-api-deploy:

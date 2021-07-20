@@ -142,45 +142,11 @@
 		</plugins>
 	</build>
 
-	<profiles>
-		<profile>
-			<id>sonar</id>
-			<properties>
-				<sonar.sources>.</sonar.sources>
-				<sonar.inclusions>src/main/java/**,src/main/resources/**</sonar.inclusions>
-				<sonar.exclusions>${code.coverage.exclusions}</sonar.exclusions>
-				<sonar.projectKey>prasanna12510_student-restful-api</sonar.projectKey>
-				<sonar.organization>prasanna12510</sonar.organization>
-				<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-			</properties>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.sonarsource.scanner.maven</groupId>
-						<artifactId>sonar-maven-plugin</artifactId>
-						<version>3.7.0.1746</version>
-						<executions>
-							<execution>
-								<phase>verify</phase>
-								<goals>
-									<goal>sonar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
 	<distributionManagement>
 		<repository>
 			<id>github</id>
-			<name>RESTFUL STUDENT API Using SPRINGBOOT and Terraform on AWS ECS </name>
-			<url>https://maven.pkg.github.com/prasanna12510/student-restful-api</url>
+			<name>RESTFUL STUDENT API Using SPRINGBOOT and HELM on Minikube </name>
+			<url>https://maven.pkg.github.com/prasanna12510/simple-ci-cd-system</url>
 		</repository>
 	</distributionManagement>
 
