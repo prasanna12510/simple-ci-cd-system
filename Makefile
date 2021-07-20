@@ -13,7 +13,7 @@ endif
 
 .PHONY: docker-login
 docker-login: docker-login-check
-	docker login --username $(DOCKER_USERNAME) -p $(DOCKER_TOKEN) 2>/dev/null
+	docker login ghcr.io --username $(DOCKER_USERNAME) -p $(DOCKER_TOKEN) 2>/dev/null
 
 .PHONY: docker-retag-push
 docker-retag-push: docker-push-check
