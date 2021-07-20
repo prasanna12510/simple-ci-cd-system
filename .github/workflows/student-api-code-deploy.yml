@@ -45,17 +45,18 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.REPOSITORY_ACCESS_USER }}
 
       - name: Build docker image
-        run : mvn install dockerfile:build
+        run : |
+          export GITHUB_SHA_SHORT=`sed -e 's/^"//' -e 's/"$//' <<<"$MASTER_COMMIT_ID" | cut -c1-7`
+          echo "APP_TAG=$(echo $GITHUB_SHA_SHORT)" >> $GITHUB_ENV
+          mvn install dockerfile:build
         working-directory: webapi
         env:
           MASTER_COMMIT_ID: ${{ toJson(github.sha) }}
 
       - name: Push docker image to github container Registry
         run : |
-          export APP_TAG=`sed -e 's/^"//' -e 's/"$//' <<<"$MASTER_COMMIT_ID" | cut -c1-7`
           make docker-retag-push
         env:
-          MASTER_COMMIT_ID: ${{ toJson(github.sha) }}
           DOCKER_USERNAME: ${{ secrets.REPOSITORY_ACCESS_USER }}
           DOCKER_REPO: student-api
 
@@ -75,7 +76,9 @@ jobs:
       run: |
         mv ./helm-chart/student-api/Chart.yaml ./helm-chart/student-api/Chart.old.yaml &&
         cat ./helm-chart/student-api/Chart.old.yaml | grep -v appVersion > ./helm-chart/student-api/Chart.yaml &&
-        echo -e "\r\nappVersion: v${GITHUB_REF##*/}\r\n" >> ./helm-chart/student-api/Chart.yaml &&
+        export GITHUB_SHA_SHORT=`sed -e 's/^"//' -e 's/"$//' <<<"$MASTER_COMMIT_ID" | cut -c1-7` &&
+        echo "APP_TAG=$(echo $GITHUB_SHA_SHORT)" >> $GITHUB_ENV &&
+        echo -e "\r\nappVersion: ${APP_TAG}\r\n" >> ./helm-chart/student-api/Chart.yaml &&
         cat ./helm-chart/student-api/Chart.yaml
       env:
         MASTER_COMMIT_ID: ${{ toJson(github.sha) }}
@@ -83,9 +86,5 @@ jobs:
     - name: Helm install
       uses: WyriHaximus/github-action-helm3@v2
       with:
-        exec: |
-          export APP_TAG=`sed -e 's/^"//' -e 's/"$//' <<<"$MASTER_COMMIT_ID" | cut -c1-7` &&
-          helm upgrade --install student-api --namespace=student-api ./helm-chart/student-api --set image.tag=${APP_TAG}
+        exec: helm upgrade --install student-api --namespace=student-api ./helm-chart/student-api --set image.tag=${APP_TAG}
         kubeconfig: '${{ secrets.KUBECONFIG }}'
-      env:
-        MASTER_COMMIT_ID: ${{ toJson(github.sha) }}
