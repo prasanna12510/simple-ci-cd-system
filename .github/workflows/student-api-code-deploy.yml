@@ -2,10 +2,11 @@ name: student-api-code-deploy
 on:
   push:
     branches: '**'
-    # tags:
-    #   - student-api-*
-    # paths:
-    #   - "webapi/**"
+    tags:
+      - student-api-*
+    paths:
+      - "webapi/**"
+      - "helm-chart/student-api/**"
 
 jobs:
   student-api-unit-test:

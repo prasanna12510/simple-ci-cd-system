@@ -28,6 +28,15 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+ingress:
+  enabled: false
+  hosts:
+    - host: student-api.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
 service:
   type: NodePort
   name: http
